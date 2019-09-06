@@ -2,6 +2,13 @@
     background-color: #134270
 }
 
+body{
+    background-color: rgb(238, 238, 238)
+}
+
+.navbar{
+    box-shadow: 4px 3px 8px 1px black;
+}
 .text-nav{
     font-size:1rem
 }
@@ -27,23 +34,35 @@
 }
 
 .btn-color{
-    background-color: rgb(109, 153, 21);
+    background: rgb(109, 153, 21);  
+    background: -webkit-linear-gradient(to top, rgb(109, 153, 21), #91bf59); 
+    background: linear-gradient(to top, rgb(109, 153, 21), #91bf59); 
     border-color:none !important;
     padding: 0.5rem 2rem;
     color :white;
     border-radius: 0;
     font-weight: 500;
-    box-shadow: 4px 3px 12px 1px #a79f9f;
+    box-shadow: 4px 3px 2px 0px #8a8585;
     border-radius : 2px
+}
+
+.color-header{
+    background-color: white
 }
 
 .text-forgot{
     line-height: 2.5rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
     color :rgb(73, 73, 73)
 }
 
 .label{
     padding-bottom: 2px;
     margin: 0;
+    font-size : 0.95rem
+}
+
+.input{
+    padding : 2px;
+    margin-bottom: 2.25rem
 }

@@ -11,19 +11,19 @@ export default class App extends Component {
           <i className="fas fa-sign-in-alt icon text-light"></i> <Nav.Link href="#link" className="text-uppercase text-light text-icon">Login/Signup</Nav.Link>
         </Navbar>
         <Container fluid={true}>
-          <Row className="justify-content-md-center align-items-md-center mt-5">
+          <Row className="justify-content-md-center align-items-md-center mt-5 ">
             <Col lg="auto">
               <Card style={{ width: '25rem' }}> 
-                <Card.Header className="login-text">Login</Card.Header>
+                <div className="login-text card-header color-header">Login</div>
                 <Card.Body>
                   <Form>
                     <Form.Group controlId="formBasicEmail">
                       <Form.Label className="text-uppercase label">Email address</Form.Label>
-                      <Form.Control type="email" placeholder="Email address" />
+                      <Form.Control type="email" placeholder="Email address" className="input"/>
                     </Form.Group>
                     <Form.Group controlId="formBasicPassword">
                       <Form.Label className="text-uppercase label">Password</Form.Label>
-                      <Form.Control type="password" placeholder="Password" />
+                      <Form.Control type="password" placeholder="Password" className="input"/>
                     </Form.Group>
                     <button  type="submit" className="btn text-uppercase btn-color">
                       Login
