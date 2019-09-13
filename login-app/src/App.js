@@ -1,41 +1,83 @@
 import React, { Component } from 'react'
 import './App.css';
-import { Navbar, Col, Row, Button, Container, Card, Form, Nav } from 'react-bootstrap'
-
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import NavigationBar from './components/NavigationBar';
+import Home from './pages/Home';
+import Error from './pages/Error';
+import Login from './components/Login';
+import PrivateRoute from './PrivateRoute';
 export default class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isLogin: false,
+      user: {
+        username: '',
+        password: ''
+      }
+    }
+  }
+
+  componentDidMount() {
+    const data = JSON.parse(localStorage.getItem("user"))
+    if (data) {
+      this.setState({
+        isLogin: data.isLogin,
+        user: {
+          username: data.user.username,
+          password: data.user.password
+        }
+      })
+    }
+  }
+
+
+  checkLogin = (data) => {
+    if (data) {
+      localStorage.setItem("user", JSON.stringify({
+        isLogin: true,
+        user: {
+          username: data.username,
+          password: data.password
+        }
+      }))
+      this.setState({
+        isLogin: true,
+        user: {
+          username: data.username,
+          password: data.password
+        }
+      })
+    }
+    else return;
+  }
+
+  logOut = (data) => {
+    console.log(data);
+
+    if (data) {
+      this.setState({
+        isLogin: false,
+        user: {
+          username: '',
+          password: ''
+        }
+      })
+    }
+  }
+
   render() {
     return (
-      <div className="App">
-        <Navbar  variant="dark" className="d-flex justify-content-between bg-nav">
-          <Navbar.Brand href="#home" className="flex-grow-1 text-center text-uppercase text-nav">Contact us</Navbar.Brand>
-          <i className="fas fa-sign-in-alt icon text-light"></i> <Nav.Link href="#link" className="text-uppercase text-light text-icon">Login/Signup</Nav.Link>
-        </Navbar>
-        <Container fluid={true}>
-          <Row className="justify-content-md-center align-items-md-center mt-5 ">
-            <Col lg="auto">
-              <Card style={{ width: '25rem' }}> 
-                <div className="login-text card-header color-header">Login</div>
-                <Card.Body>
-                  <Form>
-                    <Form.Group controlId="formBasicEmail">
-                      <Form.Label className="text-uppercase label">Email address</Form.Label>
-                      <Form.Control type="email" placeholder="Email address" className="input"/>
-                    </Form.Group>
-                    <Form.Group controlId="formBasicPassword">
-                      <Form.Label className="text-uppercase label">Password</Form.Label>
-                      <Form.Control type="password" placeholder="Password" className="input"/>
-                    </Form.Group>
-                    <button  type="submit" className="btn text-uppercase btn-color">
-                      Login
-                  </button>
-                  <Card.Link href="#" className="float-right text-uppercase text-forgot">Forgot Password ?</Card.Link>
-                  </Form>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+      <Router>
+        <div className="App">
+          <NavigationBar user={this.state.user} logOut={(data) => this.logOut(data)} />
+          {/* {this.state.isLogin && <Home /> } */}
+          <Route path="/" exact render={() => <PrivateRoute isLogin={this.state.isLogin} component={Home} />} />
+          <Route path="/login" exact render={() => <Login checkLogin={(data) => this.checkLogin(data)} />} />
+          <Route path="/error/" exact component={Error} />
+
+        </div>
+      </Router>
     );
   }
 }
