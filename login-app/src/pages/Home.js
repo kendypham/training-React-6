@@ -1,28 +1,25 @@
 import React, { Component } from 'react'
-
+import { Redirect, Route } from "react-router-dom";
+import * as util from '../utils'
 export default class Home extends Component {
 
     state = {
         isLogin: false
     }
 
-    componentDidMount() {
-        console.log('home ');
-        
-        const data = JSON.parse(localStorage.getItem("user"))
+    componentWillMount() {
+        const data = util.getData()
         if (data) {
             this.setState({
                 isLogin: true
             })
         }
-        
     }
 
-
-
-
     render() {
-
+        if(!this.state.isLogin){
+            return <Route render={() => <Redirect to='/login' />}/>
+        }
         return (
             this.state.isLogin && <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
                 <ol className="carousel-indicators">

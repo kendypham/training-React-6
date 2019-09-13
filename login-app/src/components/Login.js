@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Col, Row, Container, Card, Form } from 'react-bootstrap'
-import { Redirect } from "react-router-dom";
+import { Redirect, Route } from "react-router-dom";
+import * as util from '../utils'
 export default class Login extends Component {
     constructor(props) {
         super(props)
@@ -14,7 +15,6 @@ export default class Login extends Component {
                 password: ''
             },
             isLogin: false
-
         }
     }
 
@@ -32,19 +32,13 @@ export default class Login extends Component {
 
 
     onSubmit = (e) => {
-        console.log('123');
-
-        e.preventDefault()
         if (this.state.tmp.username === this.state.user.username && this.state.tmp.password === this.state.user.password) {         
-            localStorage.setItem("user", JSON.stringify({
-                isLogin: true,
+            this.props.checkLogin({
+                isLogin : true,
                 user: {
-                  username: this.state.user.username,
-                  password: this.state.user.password
-                }
-              }))
-            this.setState({
-                isLogin: true
+                    username: this.state.user.username,
+                    password: this.state.user.password
+                  }
             })
         }
         else {
@@ -58,23 +52,18 @@ export default class Login extends Component {
         }
 
     }
-    checkLogin = () => {
-        this.props.checkLogin(this.state.user)
-    }
-    componentDidMount() {
-        const data = JSON.parse(localStorage.getItem("user"))
+    componentWillMount() {
+        const data = util.getData()
         if (data) {
             this.setState({
                 isLogin: data.isLogin
             })
         }
-
     }
+
     render() {
         if (this.state.isLogin) {
-            return <Redirect to={{
-                pathname: "/"
-              }} />
+             return <Route render={() => <Redirect to='/' />}/>
         }
         return (
             <Container fluid={true}>
