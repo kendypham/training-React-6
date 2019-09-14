@@ -1,27 +1,16 @@
 import React, { Component } from 'react'
 import { Redirect, Route } from "react-router-dom";
-import * as util from '../utils'
 export default class Home extends Component {
-
-    state = {
-        isLogin: false
-    }
-
-    componentWillMount() {
-        const data = util.getData()
-        if (data) {
-            this.setState({
-                isLogin: true
-            })
-        }
-    }
-
+    /**
+     * render home UI if login 
+     * if not redirect to login page
+     */
     render() {
-        if(!this.state.isLogin){
+        if(!this.props.isLogin){
             return <Route render={() => <Redirect to='/login' />}/>
         }
         return (
-            this.state.isLogin && <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
+            this.props.isLogin && <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
                 <ol className="carousel-indicators">
                     <li data-target="#carouselExampleIndicators" data-slide-to="0" className="active"></li>
                     <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>

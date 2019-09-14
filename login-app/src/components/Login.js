@@ -1,8 +1,11 @@
 import React, { Component } from 'react'
 import { Col, Row, Container, Card, Form } from 'react-bootstrap'
 import { Redirect, Route } from "react-router-dom";
-import * as util from '../utils'
 export default class Login extends Component {
+    /**
+     * @param  {object} props
+     * create default state and fake account to check
+     */
     constructor(props) {
         super(props)
         this.state = {
@@ -13,11 +16,14 @@ export default class Login extends Component {
             tmp: {
                 username: '',
                 password: ''
-            },
-            isLogin: false
+            }
         }
     }
 
+    /**
+     * @param  {object} e - event of input
+     * handle change when user input and setState
+     */
     handleChange = (e) => {
         e.preventDefault()
         const name = e.target.name
@@ -30,8 +36,10 @@ export default class Login extends Component {
         })
     }
 
-
-    onSubmit = (e) => {
+    /**
+     * Check if user account available and send data login to app
+     */
+    onSubmit = () => {
         if (this.state.tmp.username === this.state.user.username && this.state.tmp.password === this.state.user.password) {         
             this.props.checkLogin({
                 isLogin : true,
@@ -44,25 +52,20 @@ export default class Login extends Component {
         else {
             this.setState({
                 tmp: {
-                    username: '',
-                    password: ''
+                    username: null,
+                    password: null
                 }
             })
             alert("Username or password wrong")
         }
 
     }
-    componentWillMount() {
-        const data = util.getData()
-        if (data) {
-            this.setState({
-                isLogin: data.isLogin
-            })
-        }
-    }
 
+    /**
+     * Check if user has logged, if not show login form
+     */
     render() {
-        if (this.state.isLogin) {
+        if (this.props.isLogin) {
              return <Route render={() => <Redirect to='/' />}/>
         }
         return (

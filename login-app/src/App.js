@@ -18,7 +18,11 @@ export default class App extends Component {
     }
   }
 
-  componentWillMount() {
+  /**
+   * Get data from localstorage
+   */
+
+  componentDidMount() {
     const data = util.getData()
     if (data) {
       this.setState({
@@ -31,56 +35,48 @@ export default class App extends Component {
     }
   }
 
-
+  /**
+   * @param  {object} data - Includes isLogin and user data
+   * Save data user logged to localstorage
+   */
   checkLogin = (data) => {
-    if (data) {
-      util.saveData({
+    if (data) {    
+      util.saveData(data)
+      this.setState({
         isLogin: true,
         user: {
           username: data.user.username,
           password: data.user.password
         }
       })
-
-      this.setState({
-        isLogin: true,
-        user: {
-          username: data.username,
-          password: data.password
-        }
-      })
     }
     else return;
   }
-
+  /**
+   * @param  {object} data - Includes isLogin and user data
+   * reset state user to default and clean localstorage
+   */
   logOut = (data) => {
     if (data) {
-      util.saveData({
-        isLogin: false,
-        user: {
-          username: null,
-          password: null
-        }
-      })
-      this.setState({
-        isLogin: false,
-        user: {
-          username: null,
-          password: null
-        }
-      })
+      util.saveData(data)
+      this.setState(data)
     }
   }
 
+  /**
+   * render Navbar and check condition if login to redirect path
+   */
   render() {
     return (
       <Router>
         <div className="App">
-          <NavigationBar logOut={(data) => this.logOut(data)} />
-          <Route path="/" exact component={Home} />
-          <Route path="/login" exact render={() => <Login checkLogin={(data) => this.checkLogin(data)} />} />
+          <NavigationBar user={this.state.user} logOut={(data) => this.logOut(data)} />
+          <Switch>
+          <Route path="/" exact render={() => <Home isLogin={this.state.isLogin}/>} />
+          <Route path="/login" exact render={() => <Login isLogin={this.state.isLogin} checkLogin={(data) => this.checkLogin(data)} />} />
           <Route path="/error/" exact component={Error} />
-
+          <Route component={Error}/>
+          </Switch>
         </div>
       </Router>
     );
