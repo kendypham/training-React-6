@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import './App.css';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import NavigationBar from './components/NavigationBar';
-import Home from './pages/Home';
-import Error from './pages/Error';
-import Login from './components/Login';
 import * as util from './utils'
+import Login from './components/Login';
+import Home from './pages/Home';
+import isLoginContext from './isLoginContext'
+import Authenticated from './Authenticated';
 export default class App extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isLogin: false,
+      isLogin: true,
       user: {
         username: '',
         password: ''
@@ -40,14 +40,11 @@ export default class App extends Component {
    * Save data user logged to localstorage
    */
   checkLogin = (data) => {
-    if (data) {    
+    if (data) {
       util.saveData(data)
       this.setState({
         isLogin: true,
-        user: {
-          username: data.user.username,
-          password: data.user.password
-        }
+        user: data.user
       })
     }
     else return;
@@ -63,22 +60,20 @@ export default class App extends Component {
     }
   }
 
+
   /**
    * render Navbar and check condition if login to redirect path
    */
   render() {
+    console.log("chay vao app");
+
     return (
-      <Router>
-        <div className="App">
-          <NavigationBar user={this.state.user} logOut={(data) => this.logOut(data)} />
-          <Switch>
-          <Route path="/" exact render={() => <Home isLogin={this.state.isLogin}/>} />
-          <Route path="/login" exact render={() => <Login isLogin={this.state.isLogin} checkLogin={(data) => this.checkLogin(data)} />} />
-          <Route path="/error/" exact component={Error} />
-          <Route component={Error}/>
-          </Switch>
-        </div>
-      </Router>
+      <isLoginContext.Provider value={this.state}>
+          <div className="App">
+            <NavigationBar user={this.state.user} logOut={(data) => this.logOut(data)} />
+          </div>
+          
+      </isLoginContext.Provider>
     );
   }
 }
