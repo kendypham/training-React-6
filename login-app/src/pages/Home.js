@@ -1,15 +1,6 @@
-import React, { Component } from 'react'
-import { Redirect, Route } from "react-router-dom";
+import React from 'react'
 import Authenticated from '../Authenticated';
-export default class Home extends Component {
-    /**
-     * render home UI if login 
-     * if not redirect to login page
-     */
-    render() {
-        // if(!this.props.isLogin){
-        //     return <Route render={() => <Redirect to='/login' />}/>
-        // }
+const Home = (props) => {
         return (
             <Authenticated>
                 <div id="carouselExampleIndicators" className="carousel slide" data-ride="carousel">
@@ -40,5 +31,6 @@ export default class Home extends Component {
                 </div>
             </Authenticated>
         )
-    }
 }
+
+export default Home

@@ -8,7 +8,7 @@ const routes = (
     <Router>
         <Switch>
             <Route path="/" exact component={App} />
-            <Route path="/login" exact component={() => <Login user={''}/>} />
+            <Route path="/login" exact component={() => <Login/>} />
             <Route path="/error" exact component={Error} />
             <Route path="/home" exact component={Home} />
             <Route path='*' component={Error} />
