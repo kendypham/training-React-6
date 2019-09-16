@@ -1,41 +1,84 @@
 import React, { Component } from 'react'
 import './App.css';
-import { Navbar, Col, Row, Button, Container, Card, Form, Nav } from 'react-bootstrap'
-
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import NavigationBar from './components/NavigationBar';
+import Home from './pages/Home';
+import Error from './pages/Error';
+import Login from './components/Login';
+import * as util from './utils'
 export default class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isLogin: false,
+      user: {
+        username: '',
+        password: ''
+      }
+    }
+  }
+
+  /**
+   * Get data from localstorage
+   */
+
+  componentDidMount() {
+    const data = util.getData()
+    if (data) {
+      this.setState({
+        isLogin: data.isLogin,
+        user: {
+          username: data.user.username,
+          password: data.user.password
+        }
+      })
+    }
+  }
+
+  /**
+   * @param  {object} data - Includes isLogin and user data
+   * Save data user logged to localstorage
+   */
+  checkLogin = (data) => {
+    if (data) {    
+      util.saveData(data)
+      this.setState({
+        isLogin: true,
+        user: {
+          username: data.user.username,
+          password: data.user.password
+        }
+      })
+    }
+    else return;
+  }
+  /**
+   * @param  {object} data - Includes isLogin and user data
+   * reset state user to default and clean localstorage
+   */
+  logOut = (data) => {
+    if (data) {
+      util.saveData(data)
+      this.setState(data)
+    }
+  }
+
+  /**
+   * render Navbar and check condition if login to redirect path
+   */
   render() {
     return (
-      <div className="App">
-        <Navbar bg="dark" variant="dark" className="d-flex justify-content-between">
-          <Navbar.Brand href="#home" className="flex-grow-1 text-center">Contact us</Navbar.Brand>
-          <Nav.Link href="#link" className="fas fa-sign-in-alt text-uppercase text-light"> Login/Signup</Nav.Link>
-        </Navbar>
-        <Container fluid={true}>
-          <Row className="justify-content-md-center align-items-md-center mt-5">
-            <Col lg="auto">
-              <Card style={{ width: '25rem' }}> 
-                <Card.Header className="font-weight-bold h3">Login</Card.Header>
-                <Card.Body>
-                  <Form>
-                    <Form.Group controlId="formBasicEmail">
-                      <Form.Label>Email address</Form.Label>
-                      <Form.Control type="email" placeholder="Enter email" />
-                    </Form.Group>
-                    <Form.Group controlId="formBasicPassword">
-                      <Form.Label>Password</Form.Label>
-                      <Form.Control type="password" placeholder="Password" />
-                    </Form.Group>
-                    <Button variant="success" type="submit" className="text-uppercase">
-                      Login
-                  </Button>
-                  <Card.Link href="#" className="float-right text-uppercase text-dark h5">Forgot Password ?</Card.Link>
-                  </Form>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </div>
+      <Router>
+        <div className="App">
+          <NavigationBar user={this.state.user} logOut={(data) => this.logOut(data)} />
+          <Switch>
+          <Route path="/" exact render={() => <Home isLogin={this.state.isLogin}/>} />
+          <Route path="/login" exact render={() => <Login isLogin={this.state.isLogin} checkLogin={(data) => this.checkLogin(data)} />} />
+          <Route path="/error/" exact component={Error} />
+          <Route component={Error}/>
+          </Switch>
+        </div>
+      </Router>
     );
   }
 }
