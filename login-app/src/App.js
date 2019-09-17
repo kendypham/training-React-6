@@ -1,29 +1,37 @@
-import React, { useState,useEffect } from 'react'
+import React, { useState } from 'react'
 import './App.css';
 import NavigationBar from './components/NavigationBar';
 import * as util from './utils'
 import isLoginContext from './isLoginContext'
-import Home from './pages/Home';
-const App = (props) => {
+import { Redirect } from "react-router-dom";
+const App = props => {
+  const data = util.getData()
+
+  /**
+   * set state before render
+   */
+
   const [user,setUser] = useState({
-    username: '',
-    password: ''
+    username: data ? data.user.username : '',
+    password: data ? data.user.password : ''
   })
 
-  const [isLogin, setIsLogin] = useState(false)
+  const [isLogin, setIsLogin] = useState(data ? data.isLogin : false)
 
+  /**
+   * @param  {object} data - includes isLogin and data user
+   * Save data to localstorage and set state with new data
+   */
   const logIn = (data) => {
+    util.saveData(data)
     setIsLogin(data.isLogin)
     setUser(data.user)
-    util.saveData(data)
   }
 
+  /**
+   * reset data in localstorage and state
+   */
   const logOut = () => {
-    setIsLogin(false)
-    setUser({
-      username: '',
-      password: ''
-    })
     util.saveData({
       isLogin : false, 
       user : {
@@ -31,21 +39,27 @@ const App = (props) => {
         password : ''
       }
     })
+    setIsLogin(false)
+    setUser({
+      username: '',
+      password: ''
+    })
   }
-
-  useEffect(() => {
-    const data = util.getData()
-    if(data){
-      setIsLogin(data.isLogin)
-      setUser(data.user)
-    }
-  },[])
-
+    
     return (
       <isLoginContext.Provider value={{user, isLogin, logIn, logOut}}>
           <div className="App">
             <NavigationBar/>
-            <Home />
+
+            {/* Check if logged will redirect to path '/home' and render component Home 
+              if not will render component Login
+            */}
+
+            {isLogin ?  <Redirect to='/home' /> : props.children}
+
+            {/* Check if logged will render component Home else redirect to '/login' */}
+
+            {isLogin && props.children.type.name !=='Login' ? props.children : <Redirect to='/login' />}
           </div>   
       </isLoginContext.Provider>
     );

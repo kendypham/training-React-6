@@ -2,8 +2,7 @@ import React, { useState, useContext } from 'react'
 import { Col, Row, Container, Card, Form } from 'react-bootstrap'
 import isLoginContext from './../isLoginContext';
 const Login = props => {
-	const  {logIn}  = useContext(isLoginContext)
-	// console.log('context',useContext(isLoginContext))
+	const { logIn } = useContext(isLoginContext)
 	const fakeUser = {
 		username: 'Truong',
 		password: '123456'
@@ -13,6 +12,12 @@ const Login = props => {
 		password: ''
 	})
 	const [isError, setIsError] = useState(false)
+	
+	/**
+	 * @param  {object} e - input event
+	 * handle state change when user input
+	 */
+
 	const handleChange = (e) => {
 		e.preventDefault()
 		setTmp({
@@ -21,6 +26,11 @@ const Login = props => {
 		})
 	}
 
+	/**
+	 * @param  {object} e - form event
+	 * Compare data user input and handle
+	 */
+	
 	const onSubmit = (e) => {
 		if (JSON.stringify(tmp) === JSON.stringify(fakeUser)) {
 			e.preventDefault()
@@ -49,7 +59,7 @@ const Login = props => {
 							{isError ?
 								<div className="alert alert-danger" role="alert">
 									Username or password wrong
-              </div> : ''}
+              	</div> : ''}
 							<Card.Body>
 								<Form>
 									<Form.Group controlId="formBasicEmail">
