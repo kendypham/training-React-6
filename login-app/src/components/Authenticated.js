@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { Redirect } from "react-router-dom";
-import isLoginContext from './isLoginContext'
+import LoginContext from '../context/LoginContext'
 
 const Authenticated = (props) => {
-	const { isLogin } = useContext(isLoginContext)
+	const { isLogin } = useContext(LoginContext)
 	return (
 		<div>
 			{isLogin ? props.children : <Redirect to='/login' />}

@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { Navbar, Nav } from 'react-bootstrap'
 import { Link } from "react-router-dom";
-import isLoginContext from '../isLoginContext'
+import LoginContext from '../context/LoginContext'
 
 const NavigationBar = props => {
-  const { user, isLogin, logOut } = useContext(isLoginContext)
+  const { user, isLogin, logOut } = useContext(LoginContext)
   const { username } = user
 
   const itemLogged =

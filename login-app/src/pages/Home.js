@@ -1,5 +1,5 @@
 import React from 'react'
-import Authenticated from '../Authenticated';
+import Authenticated from '../components/Authenticated';
 
 const Home = props => {
   return (
