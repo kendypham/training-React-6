@@ -1,105 +1,100 @@
-import React, { Component } from 'react'
+import React, { useState, useContext } from 'react'
 import { Col, Row, Container, Card, Form } from 'react-bootstrap'
-import { Redirect, Route } from "react-router-dom";
-export default class Login extends Component {
-    /**
-     * @param  {object} props
-     * create default state and fake account to check
-     */
-    constructor(props) {
-        super(props)
-        this.state = {
-            user: {
-                username: 'Truong',
-                password: '123456'
-            },
-            tmp: {
-                username: '',
-                password: ''
-            }
-        }
-    }
+import LoginContext from '../context/LoginContext';
+import { Redirect } from "react-router-dom";
 
-    /**
-     * @param  {object} e - event of input
-     * handle change when user input and setState
-     */
-    handleChange = (e) => {
-        e.preventDefault()
-        const name = e.target.name
-        const value = e.target.value
-        this.setState({
-            tmp: {
-                username: name === 'username' ? value : this.state.tmp.username,
-                password: name === 'password' ? value : this.state.tmp.password
-            }
-        })
-    }
+const Login = props => {
+	const { logIn, isLogin } = useContext(LoginContext)
+	const fakeUser = {
+		username: 'Truong',
+		password: '123456'
+	}
+	const [tmp, setTmp] = useState({
+		username: '',
+		password: ''
+	})
+	const [isError, setIsError] = useState(false)
 
-    /**
-     * Check if user account available and send data login to app
-     */
-    onSubmit = () => {
-        if (this.state.tmp.username === this.state.user.username && this.state.tmp.password === this.state.user.password) {         
-            this.props.checkLogin({
-                isLogin : true,
-                user: {
-                    username: this.state.user.username,
-                    password: this.state.user.password
-                  }
-            })
-        }
-        else {
-            this.setState({
-                tmp: {
-                    username: null,
-                    password: null
-                }
-            })
-            alert("Username or password wrong")
-        }
+	/**
+	 * @param  {object} e - input event
+	 * handle state change when user input
+	 */
 
-    }
+	const handleChange = (e) => {
+		e.preventDefault()
+		setTmp({
+			...tmp,
+			[e.target.name]: e.target.value
+		})
+	}
 
-    /**
-     * Check if user has logged, if not show login form
-     */
-    render() {
-        if (this.props.isLogin) {
-             return <Route render={() => <Redirect to='/' />}/>
-        }
-        return (
-            <Container fluid={true}>
-                <Row className="justify-content-md-center align-items-md-center mt-5 ">
-                    <Col lg="auto">
-                        <Card style={{ width: '25rem' }}>
-                            <div className="login-text card-header color-header">Login</div>
-                            <Card.Body>
-                                <Form>
-                                    <Form.Group controlId="formBasicEmail">
-                                        <Form.Label className="text-uppercase label">Username</Form.Label>
-                                        <Form.Control type="text" placeholder="Username"
-                                            className="input" name='username'
-                                            value={this.state.tmp.username}
-                                            onChange={this.handleChange} />
-                                    </Form.Group>
-                                    <Form.Group controlId="formBasicPassword">
-                                        <Form.Label className="text-uppercase label">Password</Form.Label>
-                                        <Form.Control type="password" placeholder="Password"
-                                            className="input" name='password'
-                                            value={this.state.tmp.password}
-                                            onChange={this.handleChange} />
-                                    </Form.Group>
-                                    <button type="submit" className="btn text-uppercase btn-color" onClick={this.onSubmit}>
-                                        Login
-                                    </button>
-                                    <Card.Link href="#" className="float-right text-uppercase text-forgot">Forgot Password ?</Card.Link>
-                                </Form>
-                            </Card.Body>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
-        )
-    }
+	/**
+	 * @param  {object} e - form event
+	 * Compare data user input and handle
+	 */
+
+	const onSubmit = (e) => {
+		if (JSON.stringify(tmp) === JSON.stringify(fakeUser)) {
+			e.preventDefault()
+			logIn({
+				isLogin: true,
+				user: tmp
+			})
+		}
+		else {
+			e.preventDefault()
+			setTmp({
+				...tmp,
+				password: '',
+			})
+			setIsError(true)
+		}
+	}
+	
+	if (!isLogin) {
+		return (
+			<div>
+				<Container fluid={true}>
+					<Row className="justify-content-md-center align-items-md-center mt-5 ">
+						<Col lg="auto">
+							<Card style={{ width: '25rem' }}>
+								<div className="login-text card-header color-header">Login</div>
+								{isError ?
+									<div className="alert alert-danger" role="alert">
+										Username or password wrong
+              	</div> : ''}
+								<Card.Body>
+									<Form>
+										<Form.Group controlId="formBasicEmail">
+											<Form.Label className="text-uppercase label">Username</Form.Label>
+											<Form.Control type="text" placeholder="Username"
+												className="input" name='username'
+												value={tmp.username}
+												onChange={handleChange} />
+										</Form.Group>
+										<Form.Group controlId="formBasicPassword">
+											<Form.Label className="text-uppercase label">Password</Form.Label>
+											<Form.Control type="password" placeholder="Password"
+												className="input" name='password'
+												value={tmp.password}
+												onChange={handleChange} />
+										</Form.Group>
+										<button type="submit" className="btn text-uppercase btn-color" onClick={onSubmit}>
+											Login
+                    </button>
+										<Card.Link href="#" className="float-right text-uppercase text-forgot">Forgot Password ?</Card.Link>
+									</Form>
+								</Card.Body>
+							</Card>
+						</Col>
+					</Row>
+				</Container>
+			</div>
+		)
+	}
+	else{
+		return <Redirect to='/home'/>
+	}
 }
+
+export default Login
